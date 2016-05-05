@@ -22,6 +22,7 @@ endfunction
 
 call s:turbux_command_setting("teaspoon", "teaspoon")
 call s:turbux_command_setting("rspec", "rspec")
+call s:turbux_command_setting("zeus_rspec", "zeus rspec")
 call s:turbux_command_setting("test_unit", "ruby -Itest")
 call s:turbux_command_setting("turnip", "rspec -rturnip")
 call s:turbux_command_setting("cucumber", "cucumber")
@@ -71,7 +72,11 @@ endfunction
 " Test running {{{1
 function! s:prefix_for_test(file)
   if a:file =~# '_spec.rb$'
-    return g:turbux_command_rspec
+    if exists('b:rails_root') && filereadable(b:rails_root . '/zeus.json')
+      return g:turbux_command_zeus_rspec
+    else
+      return g:turbux_command_rspec
+    end
   elseif a:file =~# '_spec.\(coffee\|js\)$'
     return g:turbux_command_teaspoon
   elseif a:file =~# '\(\<test_.*\|_test\)\.rb$'
